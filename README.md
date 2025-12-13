@@ -104,4 +104,4 @@ The tool generates high-quality images for presentations:
 
 -----
 
-*Created by [Dharm3112](https://www.google.com/search?q=https://github.com/Dharm3112)*
+*Created by [Dharm3112](https://https://github.com/Dharm3112)*
