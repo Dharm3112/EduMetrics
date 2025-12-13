@@ -1,10 +1,4 @@
-Here is a professional **README.md** file for your project. You can create a file named `README.md` in your project folder and paste this content inside.
-
-This makes your project look complete and ready for GitHub or a portfolio.
-
------
-
-# 🎓 EduMetrics 2.0 - Student Performance Dashboard
+# 🎓 EduMetrics - Student Performance Dashboard
 
 **EduMetrics 2.0** is a Python-based data analysis tool designed for educational institutions. It automates the processing of student exam scores, calculates grades using vectorization (NumPy), visualizes class performance (Matplotlib), and generates individual PDF report cards for every student.
 
