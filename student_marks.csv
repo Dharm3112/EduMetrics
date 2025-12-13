@@ -1,9 +1,9 @@
 Student_ID,Name,Semester,Math,Science,English,History,Computer
-101,John Doe,1,85,90,88,75,92
-102,Jane Smith,1,92,95,94,88,96
-103,Sam Wilson,1,78,82,79,70,85
-104,Lisa Ray,1,65,70,68,60,75
-101,John Doe,2,88,92,90,78,95
-102,Jane Smith,2,94,96,95,90,98
-103,Sam Wilson,2,80,85,82,75,88
-104,Lisa Ray,2,70,75,72,65,78
+101,Aarav Sharma,5,85,90,88,75,92
+102,Priya Patel,6,92,95,94,88,96
+103,Rohan Gupta,5,78,82,79,70,85
+104,Sneha Reddy,3,65,70,68,60,75
+101,Vikram Singh,3,88,92,90,78,95
+102,Ananya Iyer,2,94,96,95,90,98
+103,Karan Malhotra,4,80,85,82,75,88
+104,Meera Joshi,1,70,75,72,65,78
