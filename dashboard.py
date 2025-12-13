@@ -1,39 +1,30 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from fpdf import FPDF
 import os
 
 # --- CONFIGURATION ---
 INPUT_FILE = 'student_marks.csv'
 OUTPUT_FILE = 'summary_report.csv'
+REPORT_DIR = 'student_reports'  # Folder to save PDFs
 SUBJECTS = ['Math', 'Science', 'English', 'History', 'Computer']
 
+
 def load_data(filepath):
-    """
-    Step 1: Read marks from CSV.
-    """
     if not os.path.exists(filepath):
         print(f"Error: The file '{filepath}' was not found.")
         return None
-    
     print("Loading data...")
-    df = pd.read_csv(filepath)
-    return df
+    return pd.read_csv(filepath)
+
 
 def calculate_performance(df):
-    """
-    Step 2: Calculate Total, Percentage, and Grade using NumPy.
-    """
     print("Calculating performance metrics...")
-    
-    # Calculate Total Marks (Summing the subject columns)
     df['Total_Marks'] = df[SUBJECTS].sum(axis=1)
-    
-    # Calculate Percentage (Assuming each subject is out of 100)
     total_possible_marks = len(SUBJECTS) * 100
     df['Percentage'] = (df['Total_Marks'] / total_possible_marks) * 100
-    
-    # Calculate Grade using NumPy's select
+
     conditions = [
         (df['Percentage'] >= 90),
         (df['Percentage'] >= 80),
@@ -41,111 +32,126 @@ def calculate_performance(df):
         (df['Percentage'] >= 60),
         (df['Percentage'] < 60)
     ]
-    
     grades = ['A+', 'A', 'B', 'C', 'F']
-    
-    # --- THE FIX IS HERE ---
-    # We added "default='F'" so it doesn't try to use the number 0
+
+    # FIXED: Added default='F' to prevent the error you saw earlier
     df['Grade'] = np.select(conditions, grades, default='F')
-    
     return df
 
-def perform_subject_analysis(df):
-    """
-    Step 3: Subject-wise analysis (avg, max, min).
-    """
-    print("\n--- Subject-Wise Analysis ---")
-    
-    # We create a dictionary to store stats to easily convert to DataFrame later if needed
-    analysis = {}
-    
-    for subject in SUBJECTS:
-        avg_mark = df[subject].mean()
-        max_mark = df[subject].max()
-        min_mark = df[subject].min()
-        
-        analysis[subject] = {'Average': avg_mark, 'Max': max_mark, 'Min': min_mark}
-        
-        print(f"{subject}: Avg={avg_mark:.2f}, Max={max_mark}, Min={min_mark}")
-        
-    return analysis
 
-def plot_graphs(df):
+def analyze_top_performers(df):
     """
-    Step 4: Generate Graphs (Bar Chart and Line Chart).
+    UPGRADE: Identify and print the top 3 students.
     """
-    print("\nGenerating graphs...")
-    
-    # --- GRAPH 1: Average Subject-Wise Marks (Bar Chart) ---
+    print("\n--- 🏆 Top 3 Performers ---")
+    # Sort by Percentage in Descending order (Highest first)
+    top_students = df.sort_values(by='Percentage', ascending=False).head(3)
+
+    rank = 1
+    for index, row in top_students.iterrows():
+        print(f"#{rank}: {row['Name']} - {row['Percentage']:.2f}% (Grade: {row['Grade']})")
+        rank += 1
+
+
+def plot_advanced_graphs(df):
+    """
+    UPGRADE: Added a Pie Chart for Grade Distribution.
+    """
+    print("\nGenerating advanced graphs...")
+
+    # 1. Bar Chart (Existing)
     avg_marks = df[SUBJECTS].mean()
-    
     plt.figure(figsize=(10, 6))
-    colors = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#F44336'] # Custom colors
-    plt.bar(SUBJECTS, avg_marks, color=colors)
-    
+    plt.bar(SUBJECTS, avg_marks, color=['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#F44336'])
     plt.title('Class Average Marks per Subject')
-    plt.xlabel('Subjects')
-    plt.ylabel('Average Marks')
-    plt.grid(axis='y', linestyle='--', alpha=0.7)
-    
-    # Save the plot
     plt.savefig('subject_performance_bar.png')
-    print("Graph saved: subject_performance_bar.png")
-    plt.show() # Show the plot window
+    plt.close()  # Close to prevent too many windows popping up
 
-    # --- GRAPH 2: Student Performance Over Semesters (Line Chart) ---
-    # We will pick one student to visualize (e.g., John Doe - ID 101)
-    student_id = 101
-    student_data = df[df['Student_ID'] == student_id]
-    
-    if not student_data.empty:
-        student_name = student_data.iloc[0]['Name']
-        
-        plt.figure(figsize=(10, 6))
-        plt.plot(student_data['Semester'], student_data['Percentage'], marker='o', linestyle='-', color='b', linewidth=2)
-        
-        plt.title(f'Performance Trend: {student_name} (Over Semesters)')
-        plt.xlabel('Semester')
-        plt.ylabel('Percentage')
-        plt.xticks(student_data['Semester']) # Ensure only integer semesters are shown
-        plt.ylim(0, 100)
-        plt.grid(True)
-        
-        # Save the plot
-        plt.savefig(f'student_{student_id}_trend_line.png')
-        print(f"Graph saved: student_{student_id}_trend_line.png")
-        plt.show()
-    else:
-        print(f"Student ID {student_id} not found for Line Chart.")
+    # 2. Grade Distribution Pie Chart (NEW)
+    grade_counts = df['Grade'].value_counts()
 
-def export_summary(df):
+    plt.figure(figsize=(7, 7))
+    plt.pie(grade_counts, labels=grade_counts.index, autopct='%1.1f%%', startangle=140,
+            colors=['gold', 'lightblue', 'lightgreen', 'orange', 'red'])
+    plt.title('Grade Distribution (Class Performance)')
+    plt.savefig('grade_distribution_pie.png')
+    print("Graphs saved: 'subject_performance_bar.png' and 'grade_distribution_pie.png'")
+    # We show the Pie chart to the user
+    plt.show()
+
+
+def generate_pdf_reports(df):
     """
-    Step 5: Export summary to CSV.
+    UPGRADE: Generate a PDF Report Card for EACH student.
     """
-    try:
-        df.to_csv(OUTPUT_FILE, index=False)
-        print(f"\nSuccess! Summary report exported to '{OUTPUT_FILE}'")
-    except Exception as e:
-        print(f"Error exporting file: {e}")
+    print("\nGenerating PDF Report Cards...")
 
-# --- MAIN EXECUTION BLOCK ---
+    # Create directory if it doesn't exist
+    if not os.path.exists(REPORT_DIR):
+        os.makedirs(REPORT_DIR)
+
+    for index, row in df.iterrows():
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", size=12)
+
+        # Header
+        pdf.set_font("Arial", 'B', 16)
+        pdf.cell(200, 10, txt=f"Student Report Card", ln=True, align='C')
+        pdf.ln(10)  # Line break
+
+        # Student Details
+        pdf.set_font("Arial", size=12)
+        pdf.cell(200, 10, txt=f"Name: {row['Name']}", ln=True)
+        pdf.cell(200, 10, txt=f"Student ID: {row['Student_ID']}", ln=True)
+        pdf.cell(200, 10, txt=f"Semester: {row['Semester']}", ln=True)
+        pdf.ln(10)
+
+        # Marks Table Header
+        pdf.set_font("Arial", 'B', 12)
+        pdf.cell(100, 10, txt="Subject", border=1)
+        pdf.cell(50, 10, txt="Marks Obtained", border=1)
+        pdf.ln()
+
+        # Marks Rows
+        pdf.set_font("Arial", size=12)
+        for subject in SUBJECTS:
+            pdf.cell(100, 10, txt=subject, border=1)
+            pdf.cell(50, 10, txt=str(row[subject]), border=1)
+            pdf.ln()
+
+        pdf.ln(10)
+
+        # Final Summary
+        pdf.set_font("Arial", 'B', 12)
+        pdf.cell(200, 10, txt=f"Total Marks: {row['Total_Marks']} / {len(SUBJECTS) * 100}", ln=True)
+        pdf.cell(200, 10, txt=f"Percentage: {row['Percentage']:.2f}%", ln=True)
+        pdf.set_text_color(255, 0, 0) if row['Grade'] == 'F' else pdf.set_text_color(0, 128, 0)
+        pdf.cell(200, 10, txt=f"Final Grade: {row['Grade']}", ln=True)
+
+        # Save PDF
+        filename = f"{REPORT_DIR}/{row['Name']}_Sem{row['Semester']}_Report.pdf"
+        pdf.output(filename)
+
+    print(f"Success! All report cards saved in the '{REPORT_DIR}' folder.")
+
+
+# --- MAIN EXECUTION ---
 if __name__ == "__main__":
-    # 1. Load
     data = load_data(INPUT_FILE)
-    
-    if data is not None:
-        # 2. Process
-        processed_data = calculate_performance(data)
-        
-        # Show top 5 rows in console
-        print("\n--- Processed Data Preview ---")
-        print(processed_data[['Name', 'Semester', 'Total_Marks', 'Percentage', 'Grade']].head())
 
-        # 3. Analyze
-        perform_subject_analysis(processed_data)
-        
-        # 4. Visualize
-        plot_graphs(processed_data)
-        
-        # 5. Export
-        export_summary(processed_data)
+    if data is not None:
+        # 1. Process
+        processed_data = calculate_performance(data)
+
+        # 2. Analyze Top Performers (NEW)
+        analyze_top_performers(processed_data)
+
+        # 3. Visualizations (UPDATED)
+        plot_advanced_graphs(processed_data)
+
+        # 4. Generate PDFs (NEW)
+        generate_pdf_reports(processed_data)
+
+        # 5. Export Summary
+        processed_data.to_csv(OUTPUT_FILE, index=False)
