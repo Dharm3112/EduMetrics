@@ -1,9 +1,9 @@
 Student_ID,Name,Semester,Math,Science,English,History,Computer,Total_Marks,Percentage,Grade
-101,John Doe,1,85,90,88,75,92,430,86.0,A
-102,Jane Smith,1,92,95,94,88,96,465,93.0,A+
-103,Sam Wilson,1,78,82,79,70,85,394,78.8,B
-104,Lisa Ray,1,65,70,68,60,75,338,67.60000000000001,C
-101,John Doe,2,88,92,90,78,95,443,88.6,A
-102,Jane Smith,2,94,96,95,90,98,473,94.6,A+
-103,Sam Wilson,2,80,85,82,75,88,410,82.0,A
-104,Lisa Ray,2,70,75,72,65,78,360,72.0,B
+101,Aarav Sharma,5,85,90,88,75,92,430,86.0,A
+102,Priya Patel,6,92,95,94,88,96,465,93.0,A+
+103,Rohan Gupta,5,78,82,79,70,85,394,78.8,B
+104,Sneha Reddy,3,65,70,68,60,75,338,67.60000000000001,C
+101,Vikram Singh,3,88,92,90,78,95,443,88.6,A
+102,Ananya Iyer,2,94,96,95,90,98,473,94.6,A+
+103,Karan Malhotra,4,80,85,82,75,88,410,82.0,A
+104,Meera Joshi,1,70,75,72,65,78,360,72.0,B
