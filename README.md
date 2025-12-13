@@ -37,7 +37,7 @@ EduMetrics/
 ├── summary_report.csv         # Output file (Processed data with grades)
 │
 ├── student_reports/           # Generated PDF Report Cards stored here
-│   ├── John Doe_Sem1_Report.pdf
+│   ├── Ananya Iyer_Sem5_Report.pdf
 │   └── ...
 │
 ├── subject_performance_bar.png # Generated Bar Chart
