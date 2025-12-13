@@ -1,5 +1,0 @@
-pandas
-numpy
-matplotlib
-openpyxl
-streamlit   # optional, only if you plan to run Streamlit app
