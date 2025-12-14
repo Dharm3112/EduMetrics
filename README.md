@@ -112,6 +112,3 @@ To enable email features, update the `send_email_reports` function in `dashboard
 -----
 
 *Created by [Dharm Patel](https://github.com/Dharm3112)*
-
-```
-```
