@@ -1,14 +1,64 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from fpdf import FPDF
-import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
+
+
+def send_email_reports(df):
+    print("\n--- 📧 Sending Email Reports ---")
+
+    # EMAIL CONFIGURATION (Replace with your details)
+    SENDER_EMAIL = "your_email@gmail.com"
+    SENDER_PASSWORD = "your_app_password"  # Use App Password, not login password
+    SMTP_SERVER = "smtp.gmail.com"
+    SMTP_PORT = 587
+
+    try:
+        # Connect to Server
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        server.starttls()
+        server.login(SENDER_EMAIL, SENDER_PASSWORD)
+
+        for index, row in df.iterrows():
+            if 'Parent_Email' not in row or pd.isna(row['Parent_Email']):
+                print(f"Skipping {row['Name']}: No email found.")
+                continue
+
+            # Email Content
+            msg = MIMEMultipart()
+            msg['From'] = SENDER_EMAIL
+            msg['To'] = row['Parent_Email']
+            msg['Subject'] = f"Exam Results: {row['Name']}"
+
+            body = f"Dear Parent,\n\nPlease find attached the report card for {row['Name']}.\n\nResults:\nPercentage: {row['Percentage']:.2f}%\nGrade: {row['Grade']}\n\nBest Regards,\nSchool Admin"
+            msg.attach(MIMEText(body, 'plain'))
+
+            # Attach PDF
+            pdf_filename = f"student_reports/{row['Name']}_Sem{row['Semester']}_Report.pdf"
+            if os.path.exists(pdf_filename):
+                with open(pdf_filename, "rb") as f:
+                    attach = MIMEApplication(f.read(), _subtype="pdf")
+                    attach.add_header('Content-Disposition', 'attachment', filename=os.path.basename(pdf_filename))
+                    msg.attach(attach)
+
+                # Send
+                server.send_message(msg)
+                print(f"✅ Sent email to {row['Name']} ({row['Parent_Email']})")
+            else:
+                print(f"❌ PDF not found for {row['Name']}")
+
+        server.quit()
+        print("All emails processed.")
+
+    except Exception as e:
+        print(f"Error sending email: {e}")
+
 
 # --- CONFIGURATION ---
 INPUT_FILE = 'student_marks.csv'
 OUTPUT_FILE = 'summary_report.csv'
 REPORT_DIR = 'student_reports'  # Folder to save PDFs
-SUBJECTS = ['Math', 'Science', 'English', 'History', 'Computer']
+SUBJECTS = ['DataStructures', 'DBMS', 'OperatingSystems', 'ComputerNetworks', 'Algorithms']
 
 
 def load_data(filepath):
@@ -136,6 +186,45 @@ def generate_pdf_reports(df):
     print(f"Success! All report cards saved in the '{REPORT_DIR}' folder.")
 
 
+def process_multiple_classes(filepath):
+    df = load_data(filepath)
+    if df is None: return
+
+    # Check if 'Class' column exists
+    if 'Class' not in df.columns:
+        print("Warning: 'Class' column not found. Processing as single class.")
+        # ... Run original logic ...
+        return
+
+    # Group by Class
+    grouped = df.groupby('Class')
+
+    for class_name, class_df in grouped:
+        print(f"\n==========================================")
+        print(f"🏫 Processing Class: {class_name}")
+        print(f"==========================================")
+
+        # 1. Calculate Performance for this class
+        processed_df = calculate_performance(class_df.copy())
+
+        # 2. Analyze Top Performers for this class
+        analyze_top_performers(processed_df)
+
+        # 3. Generate Visualizations (Save with unique names)
+        # Note: You'll need to update plot_advanced_graphs to accept a prefix/filename
+        # e.g., savefig(f"reports/{class_name}_bar_chart.png")
+
+        # 4. Generate Reports
+        generate_pdf_reports(processed_df)  # PDF filename already includes Student Name, so it's safe
+
+        # 5. Save Class Specific CSV
+        processed_df.to_csv(f"summary_report_{class_name}.csv", index=False)
+
+
+if __name__ == "__main__":
+    process_multiple_classes(INPUT_FILE)
+
+
 # --- MAIN EXECUTION ---
 if __name__ == "__main__":
     data = load_data(INPUT_FILE)
@@ -155,3 +244,4 @@ if __name__ == "__main__":
 
         # 5. Export Summary
         processed_data.to_csv(OUTPUT_FILE, index=False)
+

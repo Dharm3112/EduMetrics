@@ -1,9 +1,16 @@
-Student_ID,Name,Semester,Math,Science,English,History,Computer
-101,Aarav Sharma,5,85,90,88,75,92
-102,Priya Patel,6,92,95,94,88,96
-103,Rohan Gupta,5,78,82,79,70,85
-104,Sneha Reddy,3,65,70,68,60,75
-101,Vikram Singh,3,88,92,90,78,95
-102,Ananya Iyer,2,94,96,95,90,98
-103,Karan Malhotra,4,80,85,82,75,88
-104,Meera Joshi,1,70,75,72,65,78
+Student_ID,Name,Class,Semester,DataStructures,DBMS,OperatingSystems,ComputerNetworks,Algorithms
+201,Aryan Khanna,CS-A,3,85,88,82,78,90
+202,Ishita Verma,CS-A,3,92,95,90,88,94
+203,Rohan Das,CS-A,3,75,70,68,65,72
+204,Sanya Malhotra,CS-A,3,88,85,84,80,86
+205,Kabir Singh,CS-B,3,60,65,58,55,62
+206,Priya Nair,CS-B,3,95,98,96,92,97
+207,Amit Patel,CS-B,3,78,80,75,72,76
+208,Neha Iyer,CS-B,3,82,85,80,78,84
+209,Vikram Rao,CS-A,3,55,60,50,45,58
+210,Anjali Sharma,CS-A,3,90,92,88,85,91
+211,Rahul Reddy,CS-B,3,70,72,68,65,74
+212,Simran Kaur,CS-B,3,98,99,95,94,96
+213,Deepak Chopra,CS-A,3,65,68,62,60,66
+214,Meera Joshi,CS-A,3,89,91,85,82,88
+215,Karan Mehta,CS-B,3,45,50,42,40,48
