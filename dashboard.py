@@ -1,3 +1,8 @@
+import pandas as pd
+import numpy as np  # <--- This line is missing or deleted
+import matplotlib.pyplot as plt
+from fpdf import FPDF
+import os
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
