@@ -6,6 +6,7 @@ from dashboard import calculate_performance, SUBJECTS  # Import logic from your 
 
 st.set_page_config(page_title="EduMetrics Dashboard", page_icon="🎓")
 
+
 st.title("🎓 EduMetrics - Student Performance Dashboard")
 
 # 1. File Upload
